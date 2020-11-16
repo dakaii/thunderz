@@ -3,12 +3,9 @@ package main
 import (
 	"coldhongdae/controllers"
 	"coldhongdae/database"
-	"log"
 	"net/http"
 	"os"
 
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"github.com/samsarahq/thunder/graphql"
 	"github.com/samsarahq/thunder/graphql/graphiql"
 	"github.com/samsarahq/thunder/graphql/introspection"
@@ -28,19 +25,11 @@ func main() {
 	userRepo := database.NewUserRepo(db, ctx, db.Collection(collectionName))
 	h := controllers.NewBaseHandler(userRepo)
 
-	r := mux.NewRouter()
 	schema := h.Schema()
 	introspection.AddIntrospectionToSchema(schema)
 
-	r.Handle("/graphql", graphql.Handler(schema))
-	r.Handle("/graphiql", graphiql.Handler())
-	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "content-type"})
-	originsOk := handlers.AllowedOrigins([]string{"*"})
-	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
-	log.Println(":" + port)
-
-	err := http.ListenAndServe(":"+port, handlers.CORS(originsOk, headersOk, methodsOk)(r))
-	if err != nil {
-		log.Fatal(err)
-	}
+	// Expose schema and graphiql.
+	http.Handle("/graphql", graphql.Handler(schema))
+	http.Handle("/graphiql/", http.StripPrefix("/graphiql/", graphiql.Handler()))
+	http.ListenAndServe(":"+port, nil)
 }
