@@ -14,7 +14,7 @@ import (
 func main() {
 	port, exists := os.LookupEnv("PORT")
 	if !exists {
-		port = "8080"
+		port = "3030"
 	}
 	collectionName, exists := os.LookupEnv("MONGODB_COLLECTION_NAME")
 	if !exists {
