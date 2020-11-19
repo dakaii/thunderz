@@ -1,7 +1,7 @@
 package main
 
 import (
-	"coldhongdae/controllers"
+	"coldhongdae/controller"
 	"coldhongdae/database"
 	"net/http"
 	"os"
@@ -23,7 +23,7 @@ func main() {
 
 	ctx, db := database.GetDatabase(collectionName)
 	userRepo := database.NewUserRepo(db, ctx, db.Collection(collectionName))
-	h := controllers.NewBaseHandler(userRepo)
+	h := controller.NewBaseHandler(userRepo)
 
 	schema := h.Schema()
 	introspection.AddIntrospectionToSchema(schema)

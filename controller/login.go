@@ -1,14 +1,14 @@
-package controllers
+package controller
 
 import (
-	"coldhongdae/models"
+	"coldhongdae/model"
 	"errors"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 // Login returns a jwt.
-func (h *BaseHandler) Login(user models.User) (*models.AuthToken, error) {
+func (h *BaseHandler) Login(user model.User) (*model.AuthToken, error) {
 	existingUser := h.userRepo.GetExistingUser(user.Username)
 	if existingUser.Username != "" {
 		return nil, errors.New("No user found with the inputted username")

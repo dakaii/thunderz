@@ -1,7 +1,7 @@
 package database
 
 import (
-	"coldhongdae/models"
+	"coldhongdae/model"
 	"context"
 	"fmt"
 	"log"
@@ -27,20 +27,20 @@ func NewUserRepo(db *mongo.Database, ctx context.Context, collection *mongo.Coll
 }
 
 // GetExistingUser fetches a user by the username from the db and returns it.
-func (h *UserRepo) GetExistingUser(username string) models.User {
+func (h *UserRepo) GetExistingUser(username string) model.User {
 	filter := bson.M{"username": username}
-	var user models.User
+	var user model.User
 	collection := h.collection
 	ctx := h.ctx
 	err := collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	return models.User{Username: user.Username, Password: user.Password}
+	return model.User{Username: user.Username, Password: user.Password}
 }
 
 // SaveUser creates a new user in the db..
-func (h *UserRepo) SaveUser(user models.User) (models.User, error) {
+func (h *UserRepo) SaveUser(user model.User) (model.User, error) {
 	// TODO handle the potential error below.
 	hashedPass, _ := hashPassword(user.Password)
 	user.Password = hashedPass
@@ -54,7 +54,7 @@ func (h *UserRepo) SaveUser(user models.User) (models.User, error) {
 	fmt.Println("Inserted a user with ID:", insertResult.InsertedID)
 	if err != nil {
 		fmt.Printf("ERROR: %v\n", err.Error())
-		return models.User{Username: "", Password: ""}, nil
+		return model.User{Username: "", Password: ""}, nil
 	}
 	return user, nil
 }

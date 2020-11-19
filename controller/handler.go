@@ -1,7 +1,7 @@
-package controllers
+package controller
 
 import (
-	"coldhongdae/models"
+	"coldhongdae/model"
 
 	"github.com/samsarahq/thunder/graphql"
 	"github.com/samsarahq/thunder/graphql/schemabuilder"
@@ -9,11 +9,11 @@ import (
 
 // BaseHandler contains all the repositories
 type BaseHandler struct {
-	userRepo models.UserRepository
+	userRepo model.UserRepository
 }
 
 // NewBaseHandler returns a new BaseHandler
-func NewBaseHandler(userRepo models.UserRepository) *BaseHandler {
+func NewBaseHandler(userRepo model.UserRepository) *BaseHandler {
 	return &BaseHandler{
 		userRepo: userRepo,
 	}

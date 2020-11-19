@@ -31,11 +31,11 @@ func GetDatabase(userCollection string) (context.Context, *mongo.Database) {
 	database := client.Database(dbName)
 	collection := database.Collection(userCollection)
 	opts := options.CreateIndexes().SetMaxTime(10 * time.Second)
-	models := []mongo.IndexModel{
+	model := []mongo.IndexModel{
 		{
 			Keys: bsonx.Doc{{Key: "username", Value: bsonx.String("text")}},
 		},
 	}
-	_, err = collection.Indexes().CreateMany(ctx, models, opts)
+	_, err = collection.Indexes().CreateMany(ctx, model, opts)
 	return ctx, database
 }
