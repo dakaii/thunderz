@@ -7,8 +7,3 @@ type User struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
-
-type UserRepository interface {
-	GetExistingUser(username string) User
-	SaveUser(user User) (User, error)
-}

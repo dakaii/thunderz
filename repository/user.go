@@ -1,4 +1,4 @@
-package database
+package repository
 
 import (
 	"coldhongdae/model"
@@ -10,6 +10,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
+
+type UserRepository interface {
+	GetExistingUser(username string) model.User
+	SaveUser(user model.User) (model.User, error)
+}
 
 type UserRepo struct {
 	db         *mongo.Database

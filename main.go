@@ -3,6 +3,7 @@ package main
 import (
 	"coldhongdae/controller"
 	"coldhongdae/database"
+	"coldhongdae/repository"
 	"net/http"
 	"os"
 
@@ -22,7 +23,7 @@ func main() {
 	}
 
 	ctx, db := database.GetDatabase(collectionName)
-	userRepo := database.NewUserRepo(db, ctx, db.Collection(collectionName))
+	userRepo := repository.NewUserRepo(db, ctx, db.Collection(collectionName))
 	h := controller.NewBaseHandler(userRepo)
 
 	schema := h.Schema()
