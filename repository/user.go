@@ -17,16 +17,16 @@ type UserRepository interface {
 }
 
 type UserRepo struct {
-	db         *mongo.Database
 	ctx        context.Context
+	db         *mongo.Database
 	collection *mongo.Collection
 }
 
 // NewUserRepo ..
-func NewUserRepo(db *mongo.Database, ctx context.Context, collection *mongo.Collection) *UserRepo {
+func NewUserRepo(ctx context.Context, db *mongo.Database, collection *mongo.Collection) *UserRepo {
 	return &UserRepo{
-		db:         db,
 		ctx:        ctx,
+		db:         db,
 		collection: collection,
 	}
 }
@@ -50,17 +50,16 @@ func (h *UserRepo) SaveUser(user model.User) (model.User, error) {
 	hashedPass, _ := hashPassword(user.Password)
 	user.Password = hashedPass
 
-	collection := h.collection
-	ctx := h.ctx
-	insertResult, err := collection.InsertOne(ctx, user)
+	fmt.Println("Inserting a user with username:", user.Username)
+	insertResult, err := h.collection.InsertOne(h.ctx, user)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Inserted a user with ID:", insertResult.InsertedID)
 	if err != nil {
 		fmt.Printf("ERROR: %v\n", err.Error())
-		return model.User{Username: "", Password: ""}, nil
+		return model.User{Username: "", Password: ""}, err
 	}
+	fmt.Println("Inserted a user with ID:", insertResult.InsertedID)
 	return user, nil
 }
 

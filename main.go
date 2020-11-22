@@ -23,7 +23,7 @@ func main() {
 	}
 
 	ctx, db := database.GetDatabase(collectionName)
-	userRepo := repository.NewUserRepo(db, ctx, db.Collection(collectionName))
+	userRepo := repository.NewUserRepo(ctx, db, db.Collection(collectionName))
 	h := controller.NewBaseHandler(userRepo)
 
 	schema := h.Schema()
