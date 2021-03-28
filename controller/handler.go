@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"graphyy/internal"
 	"net/http"
 
 	"github.com/graphql-go/graphql"
@@ -30,11 +29,7 @@ func GraphqlHandlfunc(schema graphql.Schema) *handler.Handler {
 		GraphiQL:   false,
 		Playground: true,
 		RootObjectFn: func(ctx context.Context, req *http.Request) map[string]interface{} {
-			token := req.Header.Get("token")
-			user, _ := internal.VerifyJWT(token)
-			return map[string]interface{}{
-				"currentUser": user,
-			}
+			return map[string]interface{}{}
 		},
 	})
 }

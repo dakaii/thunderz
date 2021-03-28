@@ -11,14 +11,14 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
-	collectionName, exists := os.LookupEnv("MONGODB_COLLECTION_NAME")
+	collectionNameScooter, exists := os.LookupEnv("MONGODB_COLLECTION_SCOOTER")
 	if !exists {
-		collectionName = "testingCollection"
+		collectionNameScooter = "testingCollection"
 	}
 
 	ctx, db := database.GetDatabase(collectionName)
-	userRepo := database.NewUserRepo(db, ctx, db.Collection(collectionName))
-	h := controller.NewBaseHandler(userRepo)
+	scooterRepo := database.NewScooterRepo(db, ctx, db.Collection(collectionNameScooter))
+	h := controller.NewBaseHandler(scooterRepo)
 
 	jsonStr := []byte(`{"username":"secondtestuser","password":"testpass"}`)
 

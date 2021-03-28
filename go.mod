@@ -1,6 +1,6 @@
 module graphyy
 
-go 1.14
+go 1.16
 
 require (
 	github.com/aws/aws-sdk-go v1.35.20 // indirect
@@ -20,7 +20,7 @@ require (
 	github.com/samsarahq/go v0.0.0-20191220233105-8077c9fbaed5 // indirect
 	github.com/samsarahq/thunder v0.5.0
 	github.com/shopspring/decimal v1.2.0 // indirect
-	go.mongodb.org/mongo-driver v1.4.2
+	go.mongodb.org/mongo-driver v1.5.0
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 	golang.org/x/text v0.3.5 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect

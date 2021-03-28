@@ -1,4 +1,3 @@
-version: "3.7"
 services:
   backend:
     build: .
@@ -8,18 +7,16 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - postgres-local
+      - mongodb-local
     env_file:
       - config.conf
 
-  postgres-local:
-    image: postgres:latest
+  mongodb-local:
+    image: mongo:latest
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - mongodb_data:/data/db
     ports:
-      - "5431:5432"
-    env_file:
-      - config.conf
+      - "27017:27017"
 
   test:
     build: .
@@ -32,4 +29,4 @@ services:
       - config.conf
 
 volumes: 
-  postgres_data:
+  mongodb_data:

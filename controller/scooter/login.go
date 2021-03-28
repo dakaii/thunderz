@@ -1,4 +1,4 @@
-package user
+package scooter
 
 import (
 	"errors"

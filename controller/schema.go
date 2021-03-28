@@ -38,13 +38,14 @@ func getRootMutation(contrs *Controllers) *graphql.Object {
 					},
 				},
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-					username, _ := params.Args["username"].(string)
-					password, _ := params.Args["password"].(string)
-					res, err := contrs.userController.Signup(model.User{Username: username, Password: password})
-					if err != nil {
-						return nil, gqlerrors.FormatError(err)
-					}
-					return res, nil
+					// username, _ := params.Args["username"].(string)
+					// password, _ := params.Args["password"].(string)
+					// res, err := contrs.userController.Signup(model.User{Username: username, Password: password})
+					// if err != nil {
+					// 	return nil, gqlerrors.FormatError(err)
+					// }
+					// return res, nil
+					// return
 				},
 			},
 			"login": &graphql.Field{
@@ -59,13 +60,13 @@ func getRootMutation(contrs *Controllers) *graphql.Object {
 					},
 				},
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-					username, _ := params.Args["username"].(string)
-					password, _ := params.Args["password"].(string)
-					res, err := contrs.userController.Login(model.User{Username: username, Password: password})
-					if err != nil {
-						return nil, gqlerrors.FormatError(err)
-					}
-					return res, nil
+					// username, _ := params.Args["username"].(string)
+					// password, _ := params.Args["password"].(string)
+					// res, err := contrs.userController.Login(model.User{Username: username, Password: password})
+					// if err != nil {
+					// 	return nil, gqlerrors.FormatError(err)
+					// }
+					// return res, nil
 				},
 			},
 		},
@@ -76,21 +77,27 @@ func getRootQuery(contrs *Controllers) *graphql.Object {
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: "RootQuery",
 		Fields: graphql.Fields{
-			"me": &graphql.Field{
+			"scooter": &graphql.Field{
 				Type: graphql.NewObject(graphql.ObjectConfig{
-					Name: "Me",
+					Name: "Scooter",
 					Fields: graphql.Fields{
-						"username": &graphql.Field{
+						"latitude": &graphql.Field{
+							Type: graphql.String,
+						},
+						"longitude": &graphql.Field{
 							Type: graphql.String,
 						},
 					},
 				}),
-				Description: "Get the logged-in user's info",
+				Description: "Get scooters",
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-					// user := params.Context.Value(contextKey("currentUser")).(model.User)
-					rootValue := params.Info.RootValue.(map[string]interface{})
-					user := rootValue["currentUser"].(model.User)
-					return user.Username, nil
+					latitude, _ := params.Args["latitude"].(string)
+					longitude, _ := params.Args["longitude"].(string)
+					res, err := contrs.scooterController.Login(model.Scooter{Latitude: latitude, Longitude: longitude})
+					if err != nil {
+						return nil, gqlerrors.FormatError(err)
+					}
+					return res, nil
 				},
 			},
 		},

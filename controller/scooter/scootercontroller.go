@@ -1,14 +1,13 @@
-package user
+package scooter
 
 import (
 	"graphyy/model"
-	"graphyy/repository/userrepo"
+	"graphyy/repository/scooterrepo"
 )
 
 // declaring the repository interface in the controller package allows us to easily swap out the actual implementation, enforcing loose coupling.
 type repository interface {
-	GetExistingUser(username string) model.User
-	CreateUser(user model.User) (model.User, error)
+	GetScootersNearby(latitude string, longitude string) model.Scooter
 }
 
 // Controller contains the service, which contains database-related logic, as an injectable dependency, allowing us to decouple business logic from db logic.
@@ -17,8 +16,8 @@ type Controller struct {
 }
 
 // InitController initializes the user controller.
-func InitController(userRepo *userrepo.UserRepo) *Controller {
+func InitController(scooterRepo *scooterrepo.ScooterRepo) *Controller {
 	return &Controller{
-		service: userRepo,
+		service: scooterRepo,
 	}
 }

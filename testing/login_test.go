@@ -10,14 +10,14 @@ import (
 )
 
 func TestUserLogin(t *testing.T) {
-	collectionName, exists := os.LookupEnv("MONGODB_COLLECTION_NAME")
+	collectionName, exists := os.LookupEnv("MONGODB_COLLECTION_SCOOTER")
 	if !exists {
 		collectionName = "testingCollection"
 	}
 
 	ctx, db := database.GetDatabase(collectionName)
-	userRepo := database.NewUserRepo(db, ctx, db.Collection(collectionName))
-	h := controller.NewBaseHandler(userRepo)
+	scooterRepo := database.NewScooterRepo(db, ctx, db.Collection(collectionName))
+	h := controller.NewBaseHandler(scooterRepo)
 
 	jsonStr := []byte(`{"username":"testuser","password":"testpass"}`)
 

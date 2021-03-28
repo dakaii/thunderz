@@ -1,18 +1,18 @@
 package controller
 
 import (
-	"graphyy/controller/user"
+	"graphyy/controller/scooter"
 	"graphyy/repository"
 )
 
 // Controllers contains all the controllers
 type Controllers struct {
-	userController *user.Controller
+	scooterController *scooter.Controller
 }
 
 // InitControllers returns a new Controllers
 func InitControllers(repositories *repository.Repositories) *Controllers {
 	return &Controllers{
-		userController: user.InitController(repositories.UserRepo),
+		scooterController: scooter.InitController(repositories.ScooterRepo),
 	}
 }

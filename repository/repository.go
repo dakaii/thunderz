@@ -1,18 +1,19 @@
 package repository
 
 import (
-	"graphyy/repository/userrepo"
+	"context"
+	"graphyy/repository/scooterrepo"
 
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Repositories contains all the repo structs
 type Repositories struct {
-	UserRepo *userrepo.UserRepo
+	ScooterRepo *scooterrepo.ScooterRepo
 }
 
 // InitRepositories should be called in main.go
-func InitRepositories(db *gorm.DB) *Repositories {
-	userRepo := userrepo.NewUserRepo(db)
-	return &Repositories{UserRepo: userRepo}
+func InitRepositories(ctx context.Context, db *mongo.Database) *Repositories {
+	scooterRepo := scooterrepo.NewScooterRepo(ctx, db)
+	return &Repositories{ScooterRepo: scooterRepo}
 }
