@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  backend:
+    build: .
+    command: ./build
+    volumes:
+      - .:/code
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres-local
+    env_file:
+      - config.conf
+
+  postgres-local:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5431:5432"
+    env_file:
+      - config.conf
+
+  test:
+    build: .
+    command: ./testing.test
+    volumes:
+      - .:/code
+    depends_on:
+      - postgres-local
+    env_file:
+      - config.conf
+
+volumes: 
+  postgres_data:
