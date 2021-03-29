@@ -11,8 +11,8 @@ import (
 // Schema builds a graphql schema and returns it
 func Schema(controllers *Controllers) graphql.Schema {
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
-		Query:    getRootQuery(controllers),
-		Mutation: getRootMutation(controllers),
+		Query: getRootQuery(controllers),
+		// Mutation: getRootMutation(controllers),
 	})
 	if err != nil {
 		panic(err)

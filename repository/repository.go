@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"context"
 	"graphyy/repository/scooterrepo"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,7 +12,7 @@ type Repositories struct {
 }
 
 // InitRepositories should be called in main.go
-func InitRepositories(ctx context.Context, db *mongo.Database) *Repositories {
-	scooterRepo := scooterrepo.NewScooterRepo(ctx, db)
+func InitRepositories(db *mongo.Database) *Repositories {
+	scooterRepo := scooterrepo.NewScooterRepo(db)
 	return &Repositories{ScooterRepo: scooterRepo}
 }

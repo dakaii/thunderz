@@ -27,7 +27,7 @@ func DBName() string {
 	return dbName
 }
 
-func CollectionNameScooter() string {
+func PointCollection() string {
 	url, exists := os.LookupEnv("MONGODB_COLLECTION_SCOOTER")
 	if !exists {
 		url = "collection"

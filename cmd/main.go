@@ -10,8 +10,8 @@ import (
 )
 
 func main() {
-	context, db := database.InitDatabase()
-	repos := repository.InitRepositories(context, db)
+	db := database.InitDatabase()
+	repos := repository.InitRepositories(db)
 	controllers := controller.InitControllers(repos)
 	schema := controller.Schema(controllers)
 
