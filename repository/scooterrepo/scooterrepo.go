@@ -8,6 +8,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // ScooterRepo should i rename it?
@@ -22,7 +23,7 @@ func NewScooterRepo(db *mongo.Database) *ScooterRepo {
 	}
 }
 
-func NewLocation(lat, long float64) model.Location {
+func newLocation(lat, long float64) model.Location {
 	return model.Location{
 		GeoJSONType: "Point",
 		Coordinates: model.Coordinates{Latitude: lat, Longitude: long},
@@ -31,9 +32,9 @@ func NewLocation(lat, long float64) model.Location {
 
 //https://gist.github.com/Lebski/8f9b5992fec0bf175285f1c13b1e5051
 // GetExistingUser fetches a user by the username from the db and returns it.
-func (repo *ScooterRepo) GetScootersNearby(latitude float64, longitude float64, distance int) ([]model.Point, error) {
+func (repo *ScooterRepo) GetScootersNearby(latitude float64, longitude float64, distance int, limit int64) ([]model.Point, error) {
 	var results []model.Point
-	location := model.Point{Title: "scooter", Location: NewLocation(latitude, longitude)}
+	location := model.Point{Title: "scooter", Location: newLocation(latitude, longitude)}
 	pointCollection := repo.db.Collection(envvar.PointCollection())
 	filter := bson.D{
 		{Key: "location", Value: bson.D{
@@ -43,7 +44,12 @@ func (repo *ScooterRepo) GetScootersNearby(latitude float64, longitude float64, 
 			}},
 		}},
 	}
-	cur, err := pointCollection.Find(context.Background(), filter)
+	findOptions := options.Find()
+	// Sort by `$maxDistance` field descending
+	// findOptions.SetSort(bson.D{{Key: "$maxDistance", Value: -1}})
+	findOptions.SetLimit(limit)
+
+	cur, err := pointCollection.Find(context.Background(), filter, findOptions)
 
 	if err != nil {
 		return []model.Point{}, err

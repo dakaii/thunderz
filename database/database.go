@@ -22,17 +22,16 @@ func InitDatabase() *mongo.Database {
 		log.Fatal(err)
 	}
 	db := client.Database(dbName)
-	indexOpts := options.CreateIndexes().SetMaxTime(10 * time.Second)
-	pointIndexModel := mongo.IndexModel{
-		Options: options.Index().SetBackground(true),
-		Keys:    bsonx.MDoc{"location": bsonx.String("2dsphere")},
+	collection := db.Collection(envvar.PointCollection())
+	models := []mongo.IndexModel{
+		{
+			Keys: bsonx.Doc{{Key: "Location", Value: bsonx.String("2dsphere")}},
+		},
 	}
-	pointIndexes := db.Collection(envvar.PointCollection()).Indexes()
-	_, err = pointIndexes.CreateOne(
-		ctx,
-		pointIndexModel,
-		indexOpts,
-	)
+
+	// Declare an options object
+	opts := options.CreateIndexes().SetMaxTime(10 * time.Second)
+	_, err = collection.Indexes().CreateMany(ctx, models, opts)
 	if err != nil {
 		log.Fatal(err)
 	}

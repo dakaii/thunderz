@@ -14,6 +14,7 @@ require (
 	github.com/graphql-go/handler v0.2.3
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
 	github.com/jackc/pgx/v4 v4.11.0 // indirect
+	github.com/joho/godotenv v1.3.0
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lib/pq v1.9.0 // indirect
 	github.com/rakyll/statik v0.1.7 // indirect
