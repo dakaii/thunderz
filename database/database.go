@@ -25,7 +25,7 @@ func InitDatabase() *mongo.Database {
 	collection := db.Collection(envvar.PointCollection())
 	models := []mongo.IndexModel{
 		{
-			Keys: bsonx.Doc{{Key: "Location", Value: bsonx.String("2dsphere")}},
+			Keys: bsonx.Doc{{Key: "location", Value: bsonx.String("2dsphere")}},
 		},
 	}
 

@@ -16,37 +16,30 @@ type ScooterRepo struct {
 	db *mongo.Database
 }
 
-// NewScooterRepo ..
+// NewScooterRepo constructs a ScooterRepo
 func NewScooterRepo(db *mongo.Database) *ScooterRepo {
 	return &ScooterRepo{
 		db: db,
 	}
 }
 
-func newLocation(lat, long float64) model.Location {
-	return model.Location{
-		GeoJSONType: "Point",
-		Coordinates: model.Coordinates{Latitude: lat, Longitude: long},
-	}
-}
-
 //https://gist.github.com/Lebski/8f9b5992fec0bf175285f1c13b1e5051
 // GetExistingUser fetches a user by the username from the db and returns it.
-func (repo *ScooterRepo) GetScootersNearby(latitude float64, longitude float64, distance int, limit int64) ([]model.Point, error) {
+func (repo *ScooterRepo) GetScootersNearby(latitude float64, longitude float64, distance int64, limit int64) ([]model.Point, error) {
 	var results []model.Point
-	location := model.Point{Title: "scooter", Location: newLocation(latitude, longitude)}
 	pointCollection := repo.db.Collection(envvar.PointCollection())
 	filter := bson.D{
 		{Key: "location", Value: bson.D{
 			{Key: "$near", Value: bson.D{
-				{Key: "$geometry", Value: location},
+				{Key: "$geometry", Value: model.Location{
+					GeoJSONType: "Point",
+					Coordinates: []float64{longitude, latitude}},
+				},
 				{Key: "$maxDistance", Value: distance},
 			}},
 		}},
 	}
 	findOptions := options.Find()
-	// Sort by `$maxDistance` field descending
-	// findOptions.SetSort(bson.D{{Key: "$maxDistance", Value: -1}})
 	findOptions.SetLimit(limit)
 
 	cur, err := pointCollection.Find(context.Background(), filter, findOptions)
@@ -54,7 +47,9 @@ func (repo *ScooterRepo) GetScootersNearby(latitude float64, longitude float64, 
 	if err != nil {
 		return []model.Point{}, err
 	}
+	fmt.Println("a")
 	for cur.Next(context.TODO()) {
+		fmt.Println("asdf")
 		var elem model.Point
 		err := cur.Decode(&elem)
 		if err != nil {

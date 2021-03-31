@@ -1,6 +1,18 @@
 package envvar
 
-import "os"
+import (
+	"os"
+	"strconv"
+)
+
+func Migrate() bool {
+	env, _ := os.LookupEnv("MIGRATE")
+	migrate, err := strconv.ParseBool(env)
+	if err != nil {
+		migrate = false
+	}
+	return migrate
+}
 
 func ServerPort() string {
 	port, exists := os.LookupEnv("PORT")

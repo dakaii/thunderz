@@ -39,25 +39,8 @@ func getRootQuery(contrs *Controllers) *graphql.Object {
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 					latitude, _ := params.Args["latitude"].(float64)
 					longitude, _ := params.Args["longitude"].(float64)
-					distance, _ := params.Args["distance"].(int)
+					distance, _ := params.Args["distance"].(int64)
 					limit, _ := params.Args["limit"].(int64)
-
-					// latitude, err := strconv.ParseFloat(strLatitude, 64)
-					// if err != nil {
-					// 	return nil, gqlerrors.FormatError(err)
-					// }
-					// longitude, err := strconv.ParseFloat(strLongitude, 64)
-					// if err != nil {
-					// 	return nil, gqlerrors.FormatError(err)
-					// }
-					// distance, err := strconv.Atoi(strDistance)
-					// if err != nil {
-					// 	distance = 1000
-					// }
-					// limit, err := strconv.ParseInt(strLimit, 10, 64)
-					// if err != nil {
-					// 	limit = 20
-					// }
 
 					res, err := contrs.scooterController.GetNearbyScooters(latitude, longitude, distance, limit)
 					if err != nil {

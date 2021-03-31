@@ -5,11 +5,16 @@ import (
 	"graphyy/controller"
 	"graphyy/database"
 	"graphyy/internal/envvar"
+	"graphyy/migration"
 	"graphyy/repository"
 	"net/http"
 )
 
 func main() {
+	if envvar.Migrate() {
+		migration.DataMigration()
+		// os.Exit(0)
+	}
 	db := database.InitDatabase()
 	repos := repository.InitRepositories(db)
 	controllers := controller.InitControllers(repos)
