@@ -24,7 +24,7 @@ func NewScooterRepo(db *mongo.Database) *ScooterRepo {
 }
 
 //https://gist.github.com/Lebski/8f9b5992fec0bf175285f1c13b1e5051
-// GetExistingUser fetches a user by the username from the db and returns it.
+// GetScootersNearby fetches the scooters within the specified distance.
 func (repo *ScooterRepo) GetScootersNearby(latitude float64, longitude float64, distance int64, limit int64) ([]model.Point, error) {
 	var results []model.Point
 	pointCollection := repo.db.Collection(envvar.PointCollection())
@@ -47,9 +47,8 @@ func (repo *ScooterRepo) GetScootersNearby(latitude float64, longitude float64, 
 	if err != nil {
 		return []model.Point{}, err
 	}
-	fmt.Println("a")
+
 	for cur.Next(context.TODO()) {
-		fmt.Println("asdf")
 		var elem model.Point
 		err := cur.Decode(&elem)
 		if err != nil {

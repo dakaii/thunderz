@@ -22,15 +22,6 @@ func ServerPort() string {
 	return port
 }
 
-// GetSecret returns the jwt secret.
-func AuthSecret() string {
-	secret, exists := os.LookupEnv("AUTH_SECRET")
-	if !exists {
-		secret = "secret_key"
-	}
-	return secret
-}
-
 func DBName() string {
 	dbName, exists := os.LookupEnv("MONGODB_DB_NAME")
 	if !exists {
