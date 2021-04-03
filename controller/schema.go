@@ -10,6 +10,15 @@ import (
 var pointInterface = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Point",
 	Fields: graphql.Fields{
+		"title": &graphql.Field{
+			Type: graphql.String,
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				if point, ok := p.Source.(model.Point); ok {
+					return point.Title, nil
+				}
+				return nil, nil
+			},
+		},
 		"latitude": &graphql.Field{
 			Type: graphql.NewNonNull(graphql.Float),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {

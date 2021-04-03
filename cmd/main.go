@@ -8,11 +8,13 @@ import (
 	"graphyy/migration"
 	"graphyy/repository"
 	"net/http"
+	"os"
 )
 
 func main() {
 	if envvar.Migrate() {
 		migration.DataMigration()
+		os.Exit(0)
 	}
 	db := database.InitDatabase()
 	repos := repository.InitRepositories(db)
