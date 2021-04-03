@@ -17,6 +17,7 @@ Then, you can start up the server with this command.
 make up
 ```
 
+## example query
 ``` gql
 query {
   scooter (latitude: 1.39, longitude: 103.9, limit:20, distance: 5000) {
