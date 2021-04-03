@@ -25,7 +25,7 @@ func NewScooterRepo(db *mongo.Database) *ScooterRepo {
 
 //https://gist.github.com/Lebski/8f9b5992fec0bf175285f1c13b1e5051
 // GetScootersNearby fetches the scooters within the specified distance.
-func (repo *ScooterRepo) GetScootersNearby(latitude float64, longitude float64, distance int64, limit int64) ([]model.Point, error) {
+func (repo *ScooterRepo) GetScootersNearby(lat float64, lng float64, distance int64, limit int64) ([]model.Point, error) {
 	var results []model.Point
 	pointCollection := repo.db.Collection(envvar.PointCollection())
 	filter := bson.D{
@@ -33,7 +33,7 @@ func (repo *ScooterRepo) GetScootersNearby(latitude float64, longitude float64, 
 			{Key: "$near", Value: bson.D{
 				{Key: "$geometry", Value: model.Location{
 					GeoJSONType: "Point",
-					Coordinates: []float64{longitude, latitude}},
+					Coordinates: []float64{lng, lat}},
 				},
 				{Key: "$maxDistance", Value: distance},
 			}},

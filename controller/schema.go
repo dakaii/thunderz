@@ -19,7 +19,7 @@ var pointInterface = graphql.NewObject(graphql.ObjectConfig{
 				return nil, nil
 			},
 		},
-		"latitude": &graphql.Field{
+		"lat": &graphql.Field{
 			Type: graphql.NewNonNull(graphql.Float),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				if point, ok := p.Source.(model.Point); ok {
@@ -28,7 +28,7 @@ var pointInterface = graphql.NewObject(graphql.ObjectConfig{
 				return nil, nil
 			},
 		},
-		"longitude": &graphql.Field{
+		"lng": &graphql.Field{
 			Type: graphql.NewNonNull(graphql.Float),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				if point, ok := p.Source.(model.Point); ok {
@@ -46,10 +46,10 @@ func getRootQuery(contrs *Controllers) *graphql.Object {
 		Fields: graphql.Fields{
 			"scooter": &graphql.Field{
 				Args: graphql.FieldConfigArgument{
-					"latitude": &graphql.ArgumentConfig{
+					"lat": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.Float),
 					},
-					"longitude": &graphql.ArgumentConfig{
+					"lng": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.Float),
 					},
 					"distance": &graphql.ArgumentConfig{
@@ -62,12 +62,12 @@ func getRootQuery(contrs *Controllers) *graphql.Object {
 				Type:        graphql.NewList(pointInterface),
 				Description: "Get the scooters within the specified certain distance",
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-					latitude, _ := params.Args["latitude"].(float64)
-					longitude, _ := params.Args["longitude"].(float64)
+					lat, _ := params.Args["lat"].(float64)
+					lng, _ := params.Args["lng"].(float64)
 					distance, _ := params.Args["distance"].(int)
 					limit, _ := params.Args["limit"].(int)
 
-					res, err := contrs.scooterController.GetNearbyScooters(latitude, longitude, int64(distance), int64(limit))
+					res, err := contrs.scooterController.GetNearbyScooters(lat, lng, int64(distance), int64(limit))
 					if err != nil {
 						return nil, gqlerrors.FormatError(err)
 					}

@@ -20,10 +20,10 @@ make up
 ## example query
 ``` gql
 query {
-  scooter (latitude: 1.39, longitude: 103.9, limit:20, distance: 5000) {
+  scooter (lat: 1.39, lng: 103.9, limit:20, distance: 5000) {
       title
-      latitude
-      longitude
+      lat
+      lng
     }
 }
 ```
