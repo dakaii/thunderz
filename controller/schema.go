@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"graphyy/model"
 
 	"github.com/graphql-go/graphql"
@@ -66,6 +67,14 @@ func getRootQuery(contrs *Controllers) *graphql.Object {
 					lng, _ := params.Args["lng"].(float64)
 					distance, _ := params.Args["distance"].(int)
 					limit, _ := params.Args["limit"].(int)
+
+					// TODO find a better way to validate the inputs
+					if lat < -90 || 90 < lat {
+						return nil, gqlerrors.FormatError(errors.New("invalid value of lat"))
+					}
+					if lng < -180 || 180 < lng {
+						return nil, gqlerrors.FormatError(errors.New("invalid value of lng"))
+					}
 
 					res, err := contrs.scooterController.GetNearbyScooters(lat, lng, int64(distance), int64(limit))
 					if err != nil {
