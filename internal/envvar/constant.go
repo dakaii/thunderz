@@ -5,43 +5,29 @@ import (
 	"strconv"
 )
 
-func Migrate() bool {
-	env, _ := os.LookupEnv("MIGRATE")
-	migrate, err := strconv.ParseBool(env)
+func getStrEnv(key, defaultValue string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return defaultValue
+	}
+	return value
+}
+
+func getBoolEnv(key, defaultValue string) bool {
+	env, _ := os.LookupEnv(key)
+	value, err := strconv.ParseBool(env)
 	if err != nil {
-		migrate = false
+		value = false
 	}
-	return migrate
+	return value
 }
 
-func ServerPort() string {
-	port, exists := os.LookupEnv("PORT")
-	if !exists {
-		port = "8081"
-	}
-	return port
-}
+var Migrate = getBoolEnv("MIGRATE", "false")
 
-func DBName() string {
-	dbName, exists := os.LookupEnv("MONGODB_DB_NAME")
-	if !exists {
-		dbName = "mongo"
-	}
-	return dbName
-}
+var ServerPort = getStrEnv("PORT", "8081")
 
-func PointCollection() string {
-	url, exists := os.LookupEnv("MONGODB_COLLECTION_SCOOTER")
-	if !exists {
-		url = "collection"
-	}
-	return url
-}
+var DBName = getStrEnv("MONGODB_DB_NAME", "mongo")
 
-func MongoURL() string {
-	url, exists := os.LookupEnv("MONGODB_URL")
-	if !exists {
-		url = "mongodb://localhost:27017"
-	}
-	return url
-}
+var MongoURL = getStrEnv("MONGODB_URL", "mongodb://localhost:27017")
+
+const PointCollection = "scooter"

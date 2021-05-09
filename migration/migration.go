@@ -38,7 +38,7 @@ func randomFloat(max float64, min float64) float64 {
 	return min + rand.Float64()*(max-min)
 }
 func addPoint(db *mongo.Database, point model.Point) error {
-	coll := db.Collection(envvar.PointCollection())
+	coll := db.Collection(envvar.PointCollection)
 	point.ID = primitive.NewObjectID()
 	insertResult, err := coll.InsertOne(context.Background(), point)
 	if err != nil {

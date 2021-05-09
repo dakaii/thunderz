@@ -27,7 +27,7 @@ func NewScooterRepo(db *mongo.Database) *ScooterRepo {
 // GetScootersNearby fetches the scooters within the specified distance.
 func (repo *ScooterRepo) GetScootersNearby(lat float64, lng float64, distance int64, limit int64) ([]model.Point, error) {
 	var results []model.Point
-	pointCollection := repo.db.Collection(envvar.PointCollection())
+	pointCollection := repo.db.Collection(envvar.PointCollection)
 	filter := bson.D{
 		{Key: "location", Value: bson.D{
 			{Key: "$near", Value: bson.D{

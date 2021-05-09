@@ -14,16 +14,14 @@ import (
 
 // GetDatabase returns a database instance.
 func InitDatabase() *mongo.Database {
-	url := envvar.MongoURL()
-	dbName := envvar.DBName()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(url))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(envvar.MongoURL))
 	if err != nil {
 		log.Fatal(err)
 	}
-	db := client.Database(dbName)
-	collection := db.Collection(envvar.PointCollection())
+	db := client.Database(envvar.DBName)
+	collection := db.Collection(envvar.PointCollection)
 	models := []mongo.IndexModel{
 		{
 			Keys: bsonx.Doc{{Key: "location", Value: bsonx.String("2dsphere")}},
