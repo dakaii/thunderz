@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"graphyy/controller"
 	"graphyy/database"
-	"graphyy/internal/envvar"
+	"graphyy/internal"
 	"graphyy/migration"
 	"graphyy/repository"
 	"net/http"
@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	if envvar.Migrate {
+	if internal.Migrate {
 		migration.DataMigration()
 		os.Exit(0)
 	}
@@ -23,8 +23,8 @@ func main() {
 	handler := controller.GraphqlHandlfunc(schema)
 
 	http.Handle("/graphql", corsMiddleware(handler))
-	fmt.Println("graphql api server is started at: http://localhost:" + envvar.ServerPort + "/graphql")
-	http.ListenAndServe(":"+envvar.ServerPort, nil)
+	fmt.Println("graphql api server is started at: http://localhost:" + internal.ServerPort + "/graphql")
+	http.ListenAndServe(":"+internal.ServerPort, nil)
 }
 
 func corsMiddleware(next http.Handler) http.Handler {

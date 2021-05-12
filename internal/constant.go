@@ -1,4 +1,4 @@
-package envvar
+package internal
 
 import (
 	"os"
@@ -29,5 +29,3 @@ var ServerPort = getStrEnv("PORT", "8081")
 var DBName = getStrEnv("MONGODB_DB_NAME", "mongo")
 
 var MongoURL = getStrEnv("MONGODB_URL", "mongodb://localhost:27017")
-
-const PointCollection = "scooter"

@@ -2,26 +2,30 @@ package database
 
 import (
 	"context"
+	"graphyy/internal"
 	"log"
 	"time"
-
-	"graphyy/internal/envvar"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
+type Storage struct {
+	db *mongo.Database
+}
+
 // GetDatabase returns a database instance.
-func InitDatabase() *mongo.Database {
+func InitDatabase() Storage {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(envvar.MongoURL))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(internal.MongoURL))
 	if err != nil {
 		log.Fatal(err)
 	}
-	db := client.Database(envvar.DBName)
-	collection := db.Collection(envvar.PointCollection)
+	db := client.Database(internal.DBName)
+	storage := Storage{db}
+	collection := storage.PointerCollection()
 	models := []mongo.IndexModel{
 		{
 			Keys: bsonx.Doc{{Key: "location", Value: bsonx.String("2dsphere")}},
@@ -34,6 +38,9 @@ func InitDatabase() *mongo.Database {
 	if err != nil {
 		log.Fatal(err)
 	}
+	return storage
+}
 
-	return db
+func (storage *Storage) PointerCollection() *mongo.Collection {
+	return storage.db.Collection("scooter")
 }

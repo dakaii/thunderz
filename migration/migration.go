@@ -4,14 +4,12 @@ import (
 	"context"
 	"fmt"
 	"graphyy/database"
-	"graphyy/internal/envvar"
 	"graphyy/model"
 	"log"
 	"math/rand"
 
 	"github.com/gofrs/uuid"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // defining this migration function for demonstration purposes
@@ -37,8 +35,8 @@ func DataMigration() {
 func randomFloat(max float64, min float64) float64 {
 	return min + rand.Float64()*(max-min)
 }
-func addPoint(db *mongo.Database, point model.Point) error {
-	coll := db.Collection(envvar.PointCollection)
+func addPoint(db database.Storage, point model.Point) error {
+	coll := db.PointerCollection()
 	point.ID = primitive.NewObjectID()
 	insertResult, err := coll.InsertOne(context.Background(), point)
 	if err != nil {
