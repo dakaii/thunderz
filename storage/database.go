@@ -1,4 +1,4 @@
-package database
+package storage
 
 import (
 	"context"
@@ -11,12 +11,21 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
+var Scooter = "scooter"
+
 type Storage struct {
-	db *mongo.Database
+	Mongo *mongo.Database
 }
 
-// GetDatabase returns a database instance.
+// InitDatabase returns a database instance.
 func InitDatabase() Storage {
+	mongo := initMongo()
+	return Storage{
+		Mongo: mongo,
+	}
+}
+
+func initMongo() *mongo.Database {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(internal.MongoURL))
@@ -24,8 +33,7 @@ func InitDatabase() Storage {
 		log.Fatal(err)
 	}
 	db := client.Database(internal.DBName)
-	storage := Storage{db}
-	collection := storage.PointerCollection()
+	collection := db.Collection(Scooter)
 	models := []mongo.IndexModel{
 		{
 			Keys: bsonx.Doc{{Key: "location", Value: bsonx.String("2dsphere")}},
@@ -38,9 +46,5 @@ func InitDatabase() Storage {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return storage
-}
-
-func (storage *Storage) PointerCollection() *mongo.Collection {
-	return storage.db.Collection("scooter")
+	return db
 }

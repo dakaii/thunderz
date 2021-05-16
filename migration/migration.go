@@ -3,8 +3,8 @@ package migration
 import (
 	"context"
 	"fmt"
-	"graphyy/database"
 	"graphyy/model"
+	"graphyy/storage"
 	"log"
 	"math/rand"
 
@@ -14,7 +14,7 @@ import (
 
 // defining this migration function for demonstration purposes
 func DataMigration() {
-	db := database.InitDatabase()
+	db := storage.InitDatabase()
 	for i := 0; i < 500; i++ {
 		// giving a unique name to each scooter.
 		u, err := uuid.NewV4()
@@ -35,8 +35,8 @@ func DataMigration() {
 func randomFloat(max float64, min float64) float64 {
 	return min + rand.Float64()*(max-min)
 }
-func addPoint(db database.Storage, point model.Point) error {
-	coll := db.PointerCollection()
+func addPoint(db storage.Storage, point model.Point) error {
+	coll := db.Mongo.Collection(storage.Scooter)
 	point.ID = primitive.NewObjectID()
 	insertResult, err := coll.InsertOne(context.Background(), point)
 	if err != nil {

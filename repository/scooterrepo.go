@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 	"fmt"
-	"graphyy/database"
 	"graphyy/model"
+	"graphyy/storage"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -12,13 +12,13 @@ import (
 
 // ScooterRepo should i rename it?
 type ScooterRepo struct {
-	db database.Storage
+	storage storage.Storage
 }
 
 // NewScooterRepo constructs a ScooterRepo
-func NewScooterRepo(db database.Storage) *ScooterRepo {
+func NewScooterRepo(db storage.Storage) *ScooterRepo {
 	return &ScooterRepo{
-		db: db,
+		db,
 	}
 }
 
@@ -26,7 +26,7 @@ func NewScooterRepo(db database.Storage) *ScooterRepo {
 // GetScootersNearby fetches the scooters within the specified distance.
 func (repo *ScooterRepo) GetScootersNearby(lat float64, lng float64, distance int64, limit int64) ([]model.Point, error) {
 	var results []model.Point
-	pointCollection := repo.db.PointerCollection()
+	pointCollection := repo.storage.Mongo.Collection(storage.Scooter)
 	filter := bson.D{
 		{Key: "location", Value: bson.D{
 			{Key: "$near", Value: bson.D{

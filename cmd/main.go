@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"graphyy/controller"
-	"graphyy/database"
 	"graphyy/internal"
 	"graphyy/migration"
 	"graphyy/repository"
+	"graphyy/storage"
 	"net/http"
 	"os"
 )
@@ -16,7 +16,7 @@ func main() {
 		migration.DataMigration()
 		os.Exit(0)
 	}
-	db := database.InitDatabase()
+	db := storage.InitDatabase()
 	repos := repository.InitRepositories(db)
 	controllers := controller.InitControllers(repos)
 	schema := controller.Schema(controllers)
