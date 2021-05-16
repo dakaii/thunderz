@@ -1,4 +1,4 @@
-package repository
+package service
 
 import (
 	"context"
@@ -11,20 +11,20 @@ import (
 )
 
 // ScooterRepo should i rename it?
-type ScooterRepo struct {
+type ScooterService struct {
 	storage storage.Storage
 }
 
 // NewScooterRepo constructs a ScooterRepo
-func NewScooterRepo(db storage.Storage) *ScooterRepo {
-	return &ScooterRepo{
+func NewScooterService(db storage.Storage) *ScooterService {
+	return &ScooterService{
 		db,
 	}
 }
 
 //https://gist.github.com/Lebski/8f9b5992fec0bf175285f1c13b1e5051
 // GetScootersNearby fetches the scooters within the specified distance.
-func (repo *ScooterRepo) GetScootersNearby(lat float64, lng float64, distance int64, limit int64) ([]model.Point, error) {
+func (repo *ScooterService) GetScootersNearby(lat float64, lng float64, distance int64, limit int64) ([]model.Point, error) {
 	var results []model.Point
 	pointCollection := repo.storage.Mongo.Collection(storage.Scooter)
 	filter := bson.D{

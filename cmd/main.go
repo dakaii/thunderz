@@ -5,7 +5,7 @@ import (
 	"graphyy/controller"
 	"graphyy/internal"
 	"graphyy/migration"
-	"graphyy/repository"
+	"graphyy/service"
 	"graphyy/storage"
 	"net/http"
 	"os"
@@ -17,7 +17,7 @@ func main() {
 		os.Exit(0)
 	}
 	db := storage.InitDatabase()
-	repos := repository.InitRepositories(db)
+	repos := service.InitServices(db)
 	controllers := controller.InitControllers(repos)
 	schema := controller.Schema(controllers)
 	handler := controller.GraphqlHandlfunc(schema)
