@@ -2,7 +2,6 @@ package internal
 
 import (
 	"os"
-	"strconv"
 )
 
 func getStrEnv(key, defaultValue string) string {
@@ -13,16 +12,17 @@ func getStrEnv(key, defaultValue string) string {
 	return value
 }
 
-func getBoolEnv(key, defaultValue string) bool {
-	env, _ := os.LookupEnv(key)
-	value, err := strconv.ParseBool(env)
-	if err != nil {
-		value = false
-	}
-	return value
-}
+// func getBoolEnv(key, defaultValue string) bool {
+// 	env, _ := os.LookupEnv(key)
+// 	value, err := strconv.ParseBool(env)
+// 	if err != nil {
+// 		value = false
+// 	}
+// 	return value
+// }
 
-var Migrate = getBoolEnv("MIGRATE", "false")
+// AuthSecret returns the jwt secret.
+var AuthSecret = getStrEnv("AUTH_SECRET", "secret_key")
 
 var ServerPort = getStrEnv("PORT", "8081")
 

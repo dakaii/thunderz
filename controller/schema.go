@@ -1,86 +1,96 @@
 package controller
 
 import (
-	"errors"
 	"graphyy/model"
 
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql/gqlerrors"
 )
 
-var pointInterface = graphql.NewObject(graphql.ObjectConfig{
-	Name: "Point",
+var authType = graphql.NewObject(graphql.ObjectConfig{
+	Name: "Auth",
 	Fields: graphql.Fields{
-		"title": &graphql.Field{
+		"tokenType": &graphql.Field{
 			Type: graphql.String,
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				if point, ok := p.Source.(model.Point); ok {
-					return point.Title, nil
-				}
-				return nil, nil
-			},
 		},
-		"lat": &graphql.Field{
-			Type: graphql.NewNonNull(graphql.Float),
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				if point, ok := p.Source.(model.Point); ok {
-					return point.Location.Coordinates[1], nil
-				}
-				return nil, nil
-			},
+		"token": &graphql.Field{
+			Type: graphql.String,
 		},
-		"lng": &graphql.Field{
-			Type: graphql.NewNonNull(graphql.Float),
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				if point, ok := p.Source.(model.Point); ok {
-					return point.Location.Coordinates[0], nil
-				}
-				return nil, nil
-			},
+		"expiresIn": &graphql.Field{
+			Type: graphql.Int,
 		},
 	},
 })
+
+func getRootMutation(contrs *Controllers) *graphql.Object {
+	return graphql.NewObject(graphql.ObjectConfig{
+		Name: "RootMutation",
+		Fields: graphql.Fields{
+			"signup": &graphql.Field{
+				Type:        authType,
+				Description: "Signup",
+				Args: graphql.FieldConfigArgument{
+					"username": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.String),
+					},
+					"password": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.String),
+					},
+				},
+				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+					username, _ := params.Args["username"].(string)
+					password, _ := params.Args["password"].(string)
+					res, err := contrs.authController.Signup(model.User{Username: username, Password: password})
+					if err != nil {
+						return nil, gqlerrors.FormatError(err)
+					}
+					return res, nil
+				},
+			},
+			"login": &graphql.Field{
+				Type:        authType,
+				Description: "Login",
+				Args: graphql.FieldConfigArgument{
+					"username": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.String),
+					},
+					"password": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.String),
+					},
+				},
+				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+					username, _ := params.Args["username"].(string)
+					password, _ := params.Args["password"].(string)
+					res, err := contrs.authController.Login(model.User{Username: username, Password: password})
+					if err != nil {
+						return nil, gqlerrors.FormatError(err)
+					}
+					return res, nil
+				},
+			},
+		},
+	})
+}
 
 func getRootQuery(contrs *Controllers) *graphql.Object {
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: "RootQuery",
 		Fields: graphql.Fields{
-			"scooter": &graphql.Field{
-				Args: graphql.FieldConfigArgument{
-					"lat": &graphql.ArgumentConfig{
-						Type: graphql.NewNonNull(graphql.Float),
+			"me": &graphql.Field{
+				Type: graphql.NewObject(graphql.ObjectConfig{
+					Name: "Me",
+					Fields: graphql.Fields{
+						"username": &graphql.Field{
+							Type: graphql.String,
+						},
 					},
-					"lng": &graphql.ArgumentConfig{
-						Type: graphql.NewNonNull(graphql.Float),
-					},
-					"distance": &graphql.ArgumentConfig{
-						Type: graphql.NewNonNull(graphql.Int),
-					},
-					"limit": &graphql.ArgumentConfig{
-						Type: graphql.NewNonNull(graphql.Int),
-					},
-				},
-				Type:        graphql.NewList(pointInterface),
-				Description: "Get the scooters within the specified certain distance",
+				}),
+				Description: "Get the logged-in user's info",
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-					lat, _ := params.Args["lat"].(float64)
-					lng, _ := params.Args["lng"].(float64)
-					distance, _ := params.Args["distance"].(int)
-					limit, _ := params.Args["limit"].(int)
-
-					// TODO find a better way to validate the inputs
-					if lat < -90 || 90 < lat {
-						return nil, gqlerrors.FormatError(errors.New("invalid value of lat"))
-					}
-					if lng < -180 || 180 < lng {
-						return nil, gqlerrors.FormatError(errors.New("invalid value of lng"))
-					}
-
-					res, err := contrs.scooterController.GetNearbyScooters(lat, lng, int64(distance), int64(limit))
-					if err != nil {
-						return nil, gqlerrors.FormatError(err)
-					}
-					return res, nil
+					// user := params.Context.Value(contextKey("currentUser")).(model.User)
+					rootValue := params.Info.RootValue.(map[string]interface{})
+					user := rootValue["currentUser"].(model.User)
+					return user.Username, nil
 				},
 			},
 		},

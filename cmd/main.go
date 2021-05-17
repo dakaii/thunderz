@@ -4,21 +4,15 @@ import (
 	"fmt"
 	"graphyy/controller"
 	"graphyy/internal"
-	"graphyy/migration"
 	"graphyy/service"
 	"graphyy/storage"
 	"net/http"
-	"os"
 )
 
 func main() {
-	if internal.Migrate {
-		migration.DataMigration()
-		os.Exit(0)
-	}
 	db := storage.InitDatabase()
-	repos := service.InitServices(db)
-	controllers := controller.InitControllers(repos)
+	services := service.InitServices(db)
+	controllers := controller.InitControllers(services)
 	schema := controller.Schema(controllers)
 	handler := controller.GraphqlHandlfunc(schema)
 

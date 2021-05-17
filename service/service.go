@@ -4,11 +4,11 @@ import "graphyy/storage"
 
 // Services contains all the repo structs
 type Services struct {
-	*ScooterService
+	*AuthService
 }
 
 // InitServices should be called in main.go
 func InitServices(db storage.Storage) *Services {
-	scooterRepo := NewScooterService(db)
-	return &Services{ScooterService: scooterRepo}
+	authService := NewAuthService(db)
+	return &Services{AuthService: authService}
 }

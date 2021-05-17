@@ -12,6 +12,7 @@ import (
 )
 
 var Scooter = "scooter"
+var Auth = "auth"
 
 type Storage struct {
 	Mongo *mongo.Database

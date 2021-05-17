@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"graphyy/controller/auth"
 	"net/http"
 
 	"github.com/graphql-go/graphql"
@@ -11,7 +12,8 @@ import (
 // Schema builds a graphql schema and returns it
 func Schema(controllers *Controllers) graphql.Schema {
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
-		Query: getRootQuery(controllers),
+		Query:    getRootQuery(controllers),
+		Mutation: getRootMutation(controllers),
 	})
 	if err != nil {
 		panic(err)
@@ -28,7 +30,11 @@ func GraphqlHandlfunc(schema graphql.Schema) *handler.Handler {
 		GraphiQL:   false,
 		Playground: true,
 		RootObjectFn: func(ctx context.Context, req *http.Request) map[string]interface{} {
-			return map[string]interface{}{}
+			token := req.Header.Get("token")
+			user, _ := auth.VerifyJWT(token)
+			return map[string]interface{}{
+				"currentUser": user,
+			}
 		},
 	})
 }
