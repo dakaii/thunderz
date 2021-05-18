@@ -83,14 +83,16 @@ func getRootQuery(contrs *Controllers) *graphql.Object {
 						"username": &graphql.Field{
 							Type: graphql.String,
 						},
+						"createdAt": &graphql.Field{
+							Type: graphql.DateTime,
+						},
 					},
 				}),
 				Description: "Get the logged-in user's info",
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-					// user := params.Context.Value(contextKey("currentUser")).(model.User)
 					rootValue := params.Info.RootValue.(map[string]interface{})
 					user := rootValue["currentUser"].(model.User)
-					return user.Username, nil
+					return user, nil
 				},
 			},
 		},

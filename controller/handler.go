@@ -2,8 +2,11 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	"graphyy/controller/auth"
+	"graphyy/model"
 	"net/http"
+	"strings"
 
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
@@ -30,8 +33,17 @@ func GraphqlHandlfunc(schema graphql.Schema) *handler.Handler {
 		GraphiQL:   false,
 		Playground: true,
 		RootObjectFn: func(ctx context.Context, req *http.Request) map[string]interface{} {
-			token := req.Header.Get("token")
-			user, _ := auth.VerifyJWT(token)
+			var user model.User
+			var err error
+			bearerToken := req.Header.Get("Authorization")
+			splitToken := strings.Split(bearerToken, "Bearer ")
+			if len(splitToken) >= 2 {
+				token := splitToken[1]
+				user, err = auth.VerifyJWT(token)
+				if err != nil {
+					fmt.Printf("%+v\n", err)
+				}
+			}
 			return map[string]interface{}{
 				"currentUser": user,
 			}

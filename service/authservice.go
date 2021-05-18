@@ -6,8 +6,10 @@ import (
 	"graphyy/model"
 	"graphyy/storage"
 	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -38,7 +40,9 @@ func (service *AuthService) GetExistingUser(username string) model.User {
 func (auth *AuthService) SaveUser(user model.User) (model.User, error) {
 	// TODO handle the potential error below.
 	hashedPass, _ := hashPassword(user.Password)
+	user.ID = primitive.NewObjectID()
 	user.Password = hashedPass
+	user.CreatedAt = time.Now().String()
 
 	fmt.Println("inserting a user with username:", user.Username)
 	collection := auth.storage.Mongo.Collection(storage.Auth)

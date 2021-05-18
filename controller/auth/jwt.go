@@ -50,21 +50,21 @@ func VerifyJWT(tknStr string) (model.User, error) {
 	if !token.Valid {
 		return model.User{}, errors.New("invalid token")
 	}
-	fmt.Println("TOKEN is:", token.Valid)
 
 	decoded := make(map[string]interface{})
 	for key, val := range claims {
 		decoded[key] = val
 	}
-	// decoded := claims["data"].([]interface{})
 	var username string
 	if keyExists(decoded, "username") {
 		username = decoded["username"].(string)
 	}
 
-	var createdAt time.Time
+	var createdAt string
 	if keyExists(decoded, "createdAt") {
-		createdAt = decoded["createdAt"].(time.Time)
+		fmt.Printf("ERROR: %v\n", decoded["createdAt"])
+		createdAt = decoded["createdAt"].(string)
+		fmt.Printf("createdAt: %v\n", createdAt)
 	}
 	return model.User{Username: username, CreatedAt: createdAt}, nil
 }
