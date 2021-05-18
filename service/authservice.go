@@ -47,7 +47,7 @@ func (auth *AuthService) SaveUser(user model.User) (model.User, error) {
 	}
 	user.ID = primitive.NewObjectID()
 	user.Password = hashedPass
-	user.CreatedAt = user.ID.Timestamp()
+	user.CreatedAt = user.ID.Timestamp().UTC()
 
 	fmt.Println("inserting a user with username:", user.Username)
 	collection := auth.storage.Mongo.Collection(storage.Auth)
