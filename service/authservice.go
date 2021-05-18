@@ -6,6 +6,7 @@ import (
 	"graphyy/model"
 	"graphyy/storage"
 	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -47,7 +48,7 @@ func (auth *AuthService) SaveUser(user model.User) (model.User, error) {
 	}
 	user.ID = primitive.NewObjectID()
 	user.Password = hashedPass
-	user.CreatedAt = user.ID.Timestamp().UTC()
+	user.CreatedAt = time.Now().UTC()
 
 	fmt.Println("inserting a user with username:", user.Username)
 	collection := auth.storage.Mongo.Collection(storage.Auth)
