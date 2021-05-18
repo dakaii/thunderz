@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"graphyy/model"
 
 	"github.com/graphql-go/graphql"
@@ -92,6 +93,9 @@ func getRootQuery(contrs *Controllers) *graphql.Object {
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 					rootValue := params.Info.RootValue.(map[string]interface{})
 					user := rootValue["currentUser"].(model.User)
+					if user.Username == "" {
+						return nil, gqlerrors.FormatError(errors.New("user not found"))
+					}
 					return user, nil
 				},
 			},

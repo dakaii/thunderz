@@ -51,25 +51,22 @@ func VerifyJWT(tknStr string) (model.User, error) {
 		return model.User{}, errors.New("invalid token")
 	}
 
-	decoded := make(map[string]interface{})
-	for key, val := range claims {
-		decoded[key] = val
-	}
 	var username string
-	if keyExists(decoded, "username") {
-		username = decoded["username"].(string)
+	if keyExists(claims, "username") {
+		username = claims["username"].(string)
 	}
 
-	var createdAt string
-	if keyExists(decoded, "createdAt") {
-		fmt.Printf("ERROR: %v\n", decoded["createdAt"])
-		createdAt = decoded["createdAt"].(string)
-		fmt.Printf("createdAt: %v\n", createdAt)
+	var createdAt time.Time
+	if keyExists(claims, "createdAt") {
+		createdAt, err = time.Parse(time.RFC3339, claims["createdAt"].(string))
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 	return model.User{Username: username, CreatedAt: createdAt}, nil
 }
 
-func keyExists(decoded map[string]interface{}, key string) bool {
-	val, ok := decoded[key]
+func keyExists(dict map[string]interface{}, key string) bool {
+	val, ok := dict[key]
 	return ok && val != nil
 }

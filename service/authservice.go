@@ -6,7 +6,6 @@ import (
 	"graphyy/model"
 	"graphyy/storage"
 	"log"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,7 +16,7 @@ type AuthService struct {
 	storage storage.Storage
 }
 
-// NewScooterRepo constructs a ScooterRepo
+// NewAuthService constructs a AuthService
 func NewAuthService(db storage.Storage) *AuthService {
 	return &AuthService{
 		db,
@@ -38,11 +37,17 @@ func (service *AuthService) GetExistingUser(username string) model.User {
 
 // SaveUser creates a new user in the db..
 func (auth *AuthService) SaveUser(user model.User) (model.User, error) {
-	// TODO handle the potential error below.
-	hashedPass, _ := hashPassword(user.Password)
+	hashedPass, err := hashPassword(user.Password)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err != nil {
+		fmt.Printf("ERROR: %v\n", err.Error())
+		return model.User{Username: "", Password: ""}, err
+	}
 	user.ID = primitive.NewObjectID()
 	user.Password = hashedPass
-	user.CreatedAt = time.Now().String()
+	user.CreatedAt = user.ID.Timestamp()
 
 	fmt.Println("inserting a user with username:", user.Username)
 	collection := auth.storage.Mongo.Collection(storage.Auth)

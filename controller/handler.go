@@ -33,20 +33,23 @@ func GraphqlHandlfunc(schema graphql.Schema) *handler.Handler {
 		GraphiQL:   false,
 		Playground: true,
 		RootObjectFn: func(ctx context.Context, req *http.Request) map[string]interface{} {
-			var user model.User
-			var err error
-			bearerToken := req.Header.Get("Authorization")
-			splitToken := strings.Split(bearerToken, "Bearer ")
-			if len(splitToken) >= 2 {
-				token := splitToken[1]
-				user, err = auth.VerifyJWT(token)
-				if err != nil {
-					fmt.Printf("%+v\n", err)
-				}
-			}
+			token := req.Header.Get("Authorization")
+			user, _ := verifyToken(token)
 			return map[string]interface{}{
 				"currentUser": user,
 			}
 		},
 	})
+}
+
+func verifyToken(token string) (model.User, error) {
+	var user model.User
+	var err error
+	splitToken := strings.Split(token, "Bearer ")
+	if len(splitToken) >= 2 {
+		token := splitToken[1]
+		user, err = auth.VerifyJWT(token)
+		fmt.Printf("%+v\n", err)
+	}
+	return user, err
 }
